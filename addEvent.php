@@ -26,5 +26,12 @@ if ($_GET['type'] === 'add') {
 
 	$affectedRows = $updateStatement->execute();
 	echo json_encode(['status' => true]);
+} elseif ($_GET['type'] === 'delete') {
+	$deleteStatement = $pdo->delete()
+                       ->from('events')
+                       ->where('id', '=', $_GET['id']);
+
+	$affectedRows = $deleteStatement->execute();
+	echo json_encode(['status' => true]);	
 }
 

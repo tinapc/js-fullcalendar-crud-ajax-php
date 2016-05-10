@@ -10,11 +10,23 @@ jQuery(document).ready(function($) {
 		defaultView: 'month',
 		editable: true,
 		selectable: true,
-		dayClick: function(date, jsEvent, view)
+		eventClick: function(calEvent, jsEvent, view)
 		{
-			alert('You have clicked' + date.format());
+			if (confirm('Are you sure want to delete this event?')) {
+				$.ajax({
+					url: 'addEvent.php/?type=delete&id=' + calEvent.id,
+				})
+				.done(function() {
+					console.log("success");
+					$('#calendar').fullCalendar('refetchEvents');
+				});	
+			}
+			
 		},
 		events: 'events.php',
+		eventRender: function(event, element) {
+			//element.append('<span data-id="'+ event.id+'" class="deleteEvent" onclick="alert("asds");">x</span>');
+		},
 		eventResize: function(event, delta, revertFunc) {
 
 	        $.ajax({
@@ -23,12 +35,6 @@ jQuery(document).ready(function($) {
 			.done(function() {
 				console.log("success");
 				$('#calendar').fullCalendar('refetchEvents');
-			})
-			.fail(function() {
-				console.log("error");
-			})
-			.always(function() {
-				console.log("complete");
 			});
 
 	    },
@@ -40,17 +46,16 @@ jQuery(document).ready(function($) {
 			.done(function() {
 				console.log("success");
 				$('#calendar').fullCalendar('refetchEvents');
-			})
-			.fail(function() {
-				console.log("error");
-			})
-			.always(function() {
-				console.log("complete");
 			});
 
 	    }
 	});
 
+	// Delete Event
+	$('.deleteEvent').click(function(event) {
+		var eventId = $(this).attr('data-id');
+		alert(eventId);
+	});
 
 	$('#formAdd').submit(function(event) {
 		event.preventDefault();
@@ -65,12 +70,6 @@ jQuery(document).ready(function($) {
 			console.log("success");
 			$('#calendar').fullCalendar('refetchEvents');
 			$('#myModal').modal('hide');
-		})
-		.fail(function() {
-			console.log("error");
-		})
-		.always(function() {
-			console.log("complete");
 		});
 		
 	});
